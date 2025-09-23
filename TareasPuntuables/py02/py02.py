@@ -1,5 +1,5 @@
 dia = int(input("Introduce el dia de nacimiento: "))
-mes = input("Introduca el mes de nacimiento: ").lower
+mes = input("Introduca el mes de nacimiento: ").lower()
 
 
 # Aries: 21 de marzo – 20 de abril
@@ -15,7 +15,7 @@ mes = input("Introduca el mes de nacimiento: ").lower
 # Acuario: 21 de enero – 19 de febrero
 # Piscis: 20 de febrero – 20 de marzo
 
-match(mes):
+match mes:
     case "enero":
         if dia < 20:
             print("Capricornio")
