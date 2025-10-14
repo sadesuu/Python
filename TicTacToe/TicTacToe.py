@@ -1,3 +1,5 @@
+import random
+
 tablero = [["  " for _ in range(3)] for _ in range(3)]
 #Funcion que imprime un tablero inicial
 def imprimirTablero():
@@ -34,11 +36,15 @@ def jugadorContraJugador():
         if turno % 2 == 0:
             print("Turno del Jugador X")
             fila = int(input("Inserte en que fila quiere jugar: "))
-            columna = int(input("nserte en que columna quiere jugar: "))
+            columna = int(input("Inserte en que columna quiere jugar: "))
             if tablero[fila][columna] == "  ":
                 tablero[fila][columna] = "X"
                 turno += 1
-                comprobarGanador()
+                ganador = comprobarGanador()
+                if ganador:
+                    imprimirTablero()
+                    print(ganador)
+                    break
             else:
                 print("Casilla ocupada")
             imprimirTablero()
@@ -49,13 +55,84 @@ def jugadorContraJugador():
             if tablero[fila][columna] == "  ":
                 tablero[fila][columna] = "0"
                 turno += 1
-                comprobarGanador()
+                ganador = comprobarGanador()
+                if ganador:
+                    imprimirTablero()
+                    print(ganador)
+                    break
             else:
                 print("Casilla ocupada")
             imprimirTablero()
     
 
-
+def jugadorContraMaquina():
+    turno = 0
+    while True:
+        if turno % 2 == 0:
+            print("Turno del Jugador(X)")
+            fila = int(input("Inserte en que fila quiere jugar: "))
+            columna = int(input("Inserte en que columna quiere jugar: "))
+            if tablero[fila][columna] == "  ":
+                tablero[fila][columna] = "X"
+                turno += 1
+                ganador = comprobarGanador()
+                if ganador:
+                    imprimirTablero()
+                    print(ganador)
+                    break
+        else:
+            print("Movimiento invalido, intenta de nuevo")
+        imprimirTablero()
+        if turno % 2 == 1:
+            print("Turno de la Maquina(O)")
+            fila = random.randint(0,2)
+            columna = random.randint(0,2)
+            if tablero[fila][columna] == "  ":
+                tablero[fila][columna] = "O"
+                turno +=1
+                ganador = comprobarGanador()
+                if ganador:
+                    imprimirTablero()
+                    print(ganador)
+                    break
+        else:
+            print("Movimiento invalido, intenta de nuevo")
+        imprimirTablero()
+        
+def maquinaContraMaquina():
+        turno = 0
+        while True:
+            if turno % 2 == 0:
+                print("Turno de la Maquina(O)")
+                fila = random.randint(0,2)
+                columna = random.randint(0,2)
+                if tablero[fila][columna] == "  ":
+                    tablero[fila][columna] = "X"
+                    turno +=1
+                    ganador = comprobarGanador()
+                    if ganador:
+                        imprimirTablero()
+                        print(ganador)
+                        break
+            else:
+                print("Movimiento invalido, intenta de nuevo")
+            imprimirTablero()
+            if turno % 2 == 1:
+                print("Turno de la Maquina(O)")
+                fila = random.randint(0,2)
+                columna = random.randint(0,2)
+                if tablero[fila][columna] == "  ":
+                    tablero[fila][columna] = "O"
+                    turno +=1
+                    ganador = comprobarGanador()
+                    if ganador:
+                        imprimirTablero()
+                        print(ganador)
+                        break
+            else:
+                 print("Movimiento invalido, intenta de nuevo")
+            imprimirTablero()
+        
 print("Selecciona el modo de juego: ")
 print("1. Jugador contra jugador")
 print("2. Jugador contra maquina")
@@ -66,8 +143,8 @@ match opcion:
     case 1:
         jugadorContraJugador()
     case 2:
-        print("si")
+        jugadorContraMaquina()
     case 3:
-        print("-")
+        maquinaContraMaquina()
     case _:
         print("Introduzca un modo valido")
