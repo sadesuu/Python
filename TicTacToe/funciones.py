@@ -13,6 +13,15 @@ def imprimirTablero():
             print( j, end=" | ")
         print(" ")
 
+
+def pedirMovimiento():
+    fila = int(input("Inserte en que fila quiere jugar(1, 2, 3): "))
+    columna = int(input("Inserte en que columna quiere jugar(1, 2, 3): "))
+    if fila < 1 or fila > 3 or columna < 1 or columna > 3:
+        print("Movimiento invalido, intenta de nuevo")
+        return pedirMovimiento()
+    return fila, columna
+
 def comprobarGanador():
     #Comprobar filas.
     for fila in tablero:
@@ -34,10 +43,11 @@ def comprobarGanador():
                 return   # Todavía hay casillas libres.
     return "🤝¡Empate!🤝"
     
+    
+    
 def jugador(simbolo):
     print(f"Turno del Jugador({simbolo})")
-    fila = int(input("Inserte en que fila quiere jugar(1, 2, 3): "))
-    columna = int(input("Inserte en que columna quiere jugar(1, 2, 3): "))
+    fila, columna = pedirMovimiento()
     #Comprueba que la posicion introducida sea un espacio en blanco.
     if tablero[fila-1][columna-1] == "  ":
         #Reemplaza en el tablero el espacio en blanco por el símbolo.
