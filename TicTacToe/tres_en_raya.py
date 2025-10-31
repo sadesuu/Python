@@ -14,4 +14,4 @@ match opcion:
     case 3:
         maquinaContraMaquina()
     case _:
-        print("Introduzca un modo valido")
+        print("Introduzca un modo válido")

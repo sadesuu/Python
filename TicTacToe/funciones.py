@@ -1,9 +1,9 @@
 import random
 
-tablero = [["  " for _ in range(3)] for _ in range(3)]
+tablero = [[" " for _ in range(3)] for _ in range(3)]
 #Funcion que imprime un tablero inicial
 def imprimirTablero():
-    print("   1  | 2 | 3 |")
+    print("  1 | 2 | 3 |")
     #Recorre la longitud del array.
     for i in range(len(tablero)):
         print("---------------")
@@ -11,8 +11,7 @@ def imprimirTablero():
         #Imprime el contenido del array en la posicion inesima y añade | al final.
         for j in tablero[i]:
             print( j, end=" | ")
-        print(" ")
-
+        print()
 
 def pedirMovimiento():
     fila = int(input("Inserte en que fila quiere jugar(1, 2, 3): "))
@@ -25,21 +24,21 @@ def pedirMovimiento():
 def comprobarGanador():
     #Comprobar filas.
     for fila in tablero:
-        if fila[0] == fila[1] == fila[2] and fila[0] != "  ":
+        if fila[0] == fila[1] == fila[2] and fila[0] != " ":
             return f"🏆El ganador es {fila[0]}🏆"
     #Comprobar columnas.
     for col in range(3):
-        if tablero[0][col] == tablero[1][col] == tablero[2][col] and tablero[0][col] != "  ":
+        if tablero[0][col] == tablero[1][col] == tablero[2][col] and tablero[0][col] != " ":
             return f"🏆El ganador es {tablero[0][col]}🏆"
     #Comprobar diagonales.
-    if tablero[0][0] == tablero[1][1] == tablero[2][2] and tablero[0][0] != "  ":
+    if tablero[0][0] == tablero[1][1] == tablero[2][2] and tablero[0][0] != " ":
         return f"🏆El ganador es {tablero[0][0]}🏆"
-    if tablero[0][2] == tablero[1][1] == tablero[2][0] and tablero[0][2] != "  ":
+    if tablero[0][2] == tablero[1][1] == tablero[2][0] and tablero[0][2] != " ":
         return f"🏆El ganador es {tablero[0][2]}🏆"
     # Comprobar empate
     for fila in tablero:
         for casilla in fila:
-            if casilla == "  ":
+            if casilla == " ":
                 return   # Todavía hay casillas libres.
     return "🤝¡Empate!🤝"
     
@@ -49,7 +48,7 @@ def jugador(simbolo):
     print(f"Turno del Jugador({simbolo})")
     fila, columna = pedirMovimiento()
     #Comprueba que la posicion introducida sea un espacio en blanco.
-    if tablero[fila-1][columna-1] == "  ":
+    if tablero[fila-1][columna-1] == " ":
         #Reemplaza en el tablero el espacio en blanco por el símbolo.
         tablero[fila-1][columna-1] = simbolo
         ganador = comprobarGanador()
@@ -70,7 +69,7 @@ def maquina(simbolo):
     fila = random.randint(0,2)
     columna = random.randint(0,2)
     #Comprueba que la posicion generada sea un espacio en blanco.
-    if tablero[fila][columna] == "  ":
+    if tablero[fila][columna] == " ":
         #Reemplaza en el tablero el espacio en blanco por el símbolo.
         tablero[fila][columna] = simbolo
         ganador = comprobarGanador()
