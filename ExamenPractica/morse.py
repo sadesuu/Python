@@ -39,10 +39,9 @@ morse = {
     ' ': '/'  # Espacio entre palabras
 }
 
-letra = "Hola me llamo Hugo"
-letra_mayusculas = letra.upper()
+letra = "Hola me llamo Hugo".upper()
 resultado = ""
-for i in letra_mayusculas:
+for i in letra:
     if i in morse:
         resultado += morse[i]
 print(resultado)      
