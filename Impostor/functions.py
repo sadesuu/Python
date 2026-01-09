@@ -171,6 +171,7 @@ def check_winner():
     else:
         print("El impostor ha ganado! No han descubierto al impostor.")
 
+#Juego principal
 def game():
     initial_questions()
     create_players()
