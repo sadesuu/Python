@@ -153,6 +153,13 @@ def get_voted():
             voted_player = player
     return voted_player      
 
+def check_tie():
+    global votes
+    vote_counts = list(votes.values())
+    if vote_counts.count(max(vote_counts)) > 1:
+        return True
+    return False    
+
 def check_winner():
     global impostor
     voted_player = get_voted()
@@ -170,6 +177,9 @@ def game():
     rounds()
     voting()
     display_votes()
+    check_tie()
+    if check_tie():
+        print("\nHa habido un empate en la votación. No hay ganador esta ronda.")
     voted_player = get_voted()
     print(f"\nEl jugador con más votos es: {voted_player}")
     check_winner()
