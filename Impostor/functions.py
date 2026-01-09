@@ -43,6 +43,9 @@ votes = {
 def initial_questions():
     global num_players, num_rounds,num_impostors
     num_players = int(input("Introduzca el número de jugadores: "))
+    if num_players < 3:
+        print("Se necesitan al menos 3 jugadores para jugar.")
+        num_players = int(input("Introduzca el número de jugadores: "))
     num_rounds = int(input("Introduzca el número de rondas: "))
     num_impostors = int(input("Introduzca el número de impostores: "))
 
