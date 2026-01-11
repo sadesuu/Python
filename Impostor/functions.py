@@ -13,26 +13,29 @@ dict_words = {
 }
 
 dict_hints = {
-    "gato": "Animal doméstico que maúlla",
-    "perro": "Animal doméstico que ladra",
-    "casa": "Lugar donde vives",
-    "árbol": "Planta grande con tronco y hojas",
-    "coche": "Vehículo con ruedas que usas para viajar",
-    "libro": "Objeto con páginas que lees",
-    "ciudad": "Lugar grande donde vive mucha gente",
-    "mar": "Gran masa de agua salada",
-    "montaña": "Elevación natural del terreno",
-    "río": "Corriente de agua que fluye",
-    "sol": "Estrella que ilumina nuestro planeta",
-    "luna": "Cuerpo celeste que orbita la Tierra",
-    "estrella": "Cuerpo celeste que brilla en el cielo nocturno",
-    "flor": "Parte colorida de una planta",
-    "bosque": "Gran área cubierta de árboles",
-    "playa": "Zona de arena junto al mar",
-    "nieve": "Agua congelada que cae del cielo en invierno",
-    "fuego": "Reacción química que produce calor y luz",
-    "agua": "Líquido transparente esencial para la vida",
-    "viento": "Movimiento del aire"
+    #Solo una palabra de pista por palabra para simplificar
+    "gato": "Mamifero",
+    "perro": "Mascota",
+    "casa": "Propiedad",
+    "árbol": "Planta",
+    "coche": "Vehículo",
+    "libro": "Lectura",
+    "ciudad": "Urbano",
+    "mar": "Océano",
+    "montaña": "Elevación",
+    "río": "Agua",
+    "sol": "Estrella",
+    "luna": "Satélite",
+    "estrella": "Brillante",
+    "flor": "Jardín",
+    "bosque": "Árboles",
+    "playa": "Bañador",
+    "nieve": "Invierno",
+    "fuego": "Calor",
+    "agua": "Líquido",
+    "viento": "Aire",
+
+
 }
 
 dict_answers = {
@@ -41,19 +44,34 @@ dict_answers = {
 votes = {
 }
 def initial_questions():
-    global num_players, num_rounds,num_impostors
-    num_players = int(input("Introduzca el número de jugadores: "))
-    if num_players < 3:
-        print("Se necesitan al menos 3 jugadores para jugar.")
-        num_players = int(input("Introduzca el número de jugadores: "))
-    num_rounds = int(input("Introduzca el número de rondas: "))
-    num_impostors = int(input("Introduzca el número de impostores: "))
+    global num_players, num_rounds
+    while True:
+        try:
+            num_players = int(input("Introduzca el número de jugadores: "))
+            num_rounds = int(input("Introduzca el número de rondas: "))
+            if num_players < 3:
+                print("El número mínimo de jugadores es 3. Inténtalo de nuevo.")
+                continue
+            if num_rounds < 1:
+                print("El número mínimo de rondas es 1. Inténtalo de nuevo.")
+                continue
+            break
+        except ValueError:
+            print("Por favor, introduzca un número válido.")
 
 def create_players():
     global player_list, num_players
     for i in range(num_players):
-        name_per_player = input("Introduzca el nombre para cada jugador: ").lower()
-        player_list.append(name_per_player)
+        try:
+            name_per_player = input(f"Introduzca el nombre para el jugador {i + 1}: ").lower()
+            if name_per_player in player_list:
+                print("Este nombre ya está en uso. Por favor, elija otro nombre.")
+                i -= 1
+                continue
+            player_list.append(name_per_player)
+        except Exception as e:
+            print(f"Error al añadir jugador: {e}")
+            i -= 1  
 
 def display_players():
     for player in player_list:
@@ -72,7 +90,7 @@ def choose_impostor():
     else:
         impostors = random.sample(player_list, num_impostors)
 
-    print("Impostor(es) seleccionado(s):")
+    print("Impostor seleccionado:   ")
     for impost in impostors:
         impostor = impost
         print(impost)
@@ -171,25 +189,63 @@ def check_winner():
     else:
         print("El impostor ha ganado! No han descubierto al impostor.")
 
+def reset_game():
+    global player_list, votes, dict_answers, impostor, final_word, num_players, num_rounds, num_impostors
+    player_list = []
+    votes.clear()
+    dict_answers.clear()
+    impostor = ""
+    final_word = ""
+    num_players = 0
+    num_rounds = 0
+    num_impostors = 1
+
 #Juego principal
+
 def game():
-    initial_questions()
-    create_players()
-    choose_impostor()
-    display_game_settings()
-    show_word()
-    rounds()
-    voting()
-    display_votes()
-    check_tie()
-    if check_tie():
-        print("\nEl juego ha terminado en empate debido a votos iguales.")
-    else:
-        voted_player = get_voted()
-        print(f"\nEl jugador con más votos es: {voted_player}")
-        check_winner()
-        reveal_impostor()
-        reveal_word()
+
+    flag = True
+    while flag:
+        initial_questions()
+        create_players()
+        choose_impostor()
+        display_game_settings()
+        show_word()
+        rounds()
+        voting()
+        display_votes()
+        check_tie()
+        if check_tie():
+            print("\nEl juego ha terminado en empate debido a votos iguales.")
+            respuesta = input("¿Desea jugar otra partida? (s/n): ").lower()
+            if respuesta == 's':
+                reset_game()
+                flag = True
+                continue
+            elif respuesta == 'n': 
+                print("Gracias por jugar!")
+                flag = False
+            else:
+                print("Entrada no válida. Responda con 's' o 'n'.")
+                respuesta = input("¿Desea jugar otra partida? (s/n): ").lower()
+               
+        else:
+            voted_player = get_voted()
+            print(f"\nEl jugador con más votos es: {voted_player}")
+            check_winner()
+            reveal_impostor()
+            reveal_word()
+            respuesta = input("\n¿Desea jugar otra partida? (s/n): ").lower()
+            if respuesta == 's':
+                reset_game()
+                flag = True
+                continue
+            elif respuesta == 'n': 
+                print("Gracias por jugar!")
+                flag = False
+            else:
+                print("Entrada no válida. Responda con 's' o 'n'.")
+                respuesta = input("¿Desea jugar otra partida? (s/n): ").lower()
 
 
 def main():
