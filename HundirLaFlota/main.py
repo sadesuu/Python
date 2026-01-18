@@ -1,0 +1,3 @@
+import hundirlaflota
+
+hundirlaflota.main()
