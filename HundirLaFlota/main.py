@@ -1,3 +1,3 @@
 import hundirlaflota
 
-hundirlaflota.main()
+hundirlaflota.jugar()

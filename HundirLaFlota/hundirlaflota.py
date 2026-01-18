@@ -2,10 +2,17 @@ import random
 
 #Constantes del juego
 TABLERO_SIZE = 5
-EMPTY = "O"  # Agua
-BARCO = "B"  # Barco
+VACIO = "O"  # Agua
 TOCADO = "X"  # Barco tocado
 AGUA = "-"  # Disparo al agua
+
+#Símbolos de barcos
+SIMBOLOS_BARCOS = {
+    "Crucero": "C",
+    "Submarino": "S",
+    "Destructor": "D",
+    "Lancha": "L"
+}
 
 #Definición de la flota: [nombre, tamaño]
 FLOTA = [
@@ -18,18 +25,28 @@ FLOTA = [
 
 def inicializar_tablero():
     #Crea un tablero vacío#
-    return [[EMPTY for _ in range(TABLERO_SIZE)] for _ in range(TABLERO_SIZE)]
+    return [[VACIO for _ in range(TABLERO_SIZE)] for _ in range(TABLERO_SIZE)]
 
 
-def mostrar_tablero(tablero, ocultar_barcos=True):
+def mostrar_tablero(tablero, ocultar_barcos=True, barcos=None):
     #Muestra el tablero en la consola#
     print("\n  " + " ".join(str(i) for i in range(TABLERO_SIZE)))
     for i in range(TABLERO_SIZE):
         fila = f"{i} "
         for j in range(TABLERO_SIZE):
             celda = tablero[i][j]
-            if ocultar_barcos and celda == BARCO:
-                fila += EMPTY + " "
+            
+            # Si no ocultamos barcos y tenemos info de barcos, mostrar letra original
+            if not ocultar_barcos and barcos and celda == TOCADO:
+                # Buscar si esta posición pertenece a algún barco
+                for nombre, info in barcos.items():
+                    if (i, j) in info['coordenadas']:
+                        fila += info['simbolo'] + " "
+                        break
+                else:
+                    fila += celda + " "
+            elif ocultar_barcos and celda in SIMBOLOS_BARCOS.values():
+                fila += VACIO + " "
             else:
                 fila += celda + " "
         print(fila)
@@ -42,18 +59,18 @@ def puede_colocar_barco(tablero, fila, col, tamano, horizontal):
         if col + tamano > TABLERO_SIZE:
             return False
         for j in range(col, col + tamano):
-            if tablero[fila][j] != EMPTY:
+            if tablero[fila][j] != VACIO:
                 return False
     else:
         if fila + tamano > TABLERO_SIZE:
             return False
         for i in range(fila, fila + tamano):
-            if tablero[i][col] != EMPTY:
+            if tablero[i][col] != VACIO:
                 return False
     return True
 
 
-def colocar_barco(tablero, tamano):
+def colocar_barco(tablero, tamano, emoji_barco):
     #Coloca un barco aleatoriamente en el tablero
     while True:
         horizontal = random.choice([True, False])
@@ -64,11 +81,11 @@ def colocar_barco(tablero, tamano):
             coordenadas = []
             if horizontal:
                 for j in range(col, col + tamano):
-                    tablero[fila][j] = BARCO
+                    tablero[fila][j] = emoji_barco
                     coordenadas.append((fila, j))
             else:
                 for i in range(fila, fila + tamano):
-                    tablero[i][col] = BARCO
+                    tablero[i][col] = emoji_barco
                     coordenadas.append((i, col))
             return coordenadas
 
@@ -80,11 +97,13 @@ def inicializar_juego():
     
     print("Colocando barcos...")
     for nombre, tamano in FLOTA:
-        coordenadas = colocar_barco(tablero, tamano)
+        simbolo = SIMBOLOS_BARCOS[nombre]
+        coordenadas = colocar_barco(tablero, tamano, simbolo)
         barcos[nombre] = {
             'tamano': tamano,
             'coordenadas': coordenadas,
-            'impactos': 0
+            'impactos': 0,
+            'simbolo': simbolo
         }
     
     return tablero, barcos
@@ -97,11 +116,11 @@ def procesar_disparo(tablero, barcos, fila, col):
     if celda == AGUA or celda == TOCADO:
         return "Ya has disparado aquí"
     
-    if celda == EMPTY:
+    if celda == VACIO:
         tablero[fila][col] = AGUA
         return "Agua!"
     
-    if celda == BARCO:
+    if celda in SIMBOLOS_BARCOS.values():
         tablero[fila][col] = TOCADO
         
         # Buscar el barco impactado
@@ -164,8 +183,8 @@ def jugar():
     print("=" * 30)
     print(f"Todos los barcos hundidos en {disparos} disparos")
     print("\nTablero final:")
-    mostrar_tablero(tablero, ocultar_barcos=False)
+    mostrar_tablero(tablero, ocultar_barcos=False, barcos=barcos)
 
 
-def main():
+if __name__ == "__main__":
     jugar()
