@@ -4,12 +4,36 @@ num_players = 0
 name_per_player = ""
 num_rounds = 0
 num_impostors = 1
+civil = []
 player_list = []
 impostor = ""
 final_word = ""
 
 dict_words = {
     "": ["gato", "perro", "casa", "árbol", "coche", "libro", "ciudad", "mar", "montaña", "río", "sol", "luna", "estrella", "flor", "bosque", "playa", "nieve", "fuego", "agua", "viento"],
+}
+
+dict_hints_easy = {
+    "gato": "Animal domestico que maulla",
+    "perro": "El mejor amigo del hombre",
+    "casa": "Luegar donde se habita comunmente",
+    "árbol": "Planta grande que tiene tronco y ramas",
+    "coche": "Vehiculo de cuatro ruedas con volante",
+    "libro": "Objeto que contiene hojas de papel que cuentan una historia",
+    "ciudad": "Zona urbanistica grande dentro de un pais",
+    "mar": "Lugar completo de agua donde habitan animales",
+    "montaña": "Conjunto de tierra y rocas gigantescas",
+    "río": "Flujo de agua que caen de las montañas",
+    "sol": "Los planetas orbitan alrededor de él.",
+    "luna": "Satélite que orbita alrededor de la Tierra",
+    "estrella": "Cuerpo espacial que brilla durante la noche.",
+    "flor": "Las abejas se encargan de polonizarlas.",
+    "bosque": "Conjunto de árboles.",
+    "playa": "Frontera de la tierra con el mar relleno de arena.",
+    "nieve": "Lluvia congelada.",
+    "fuego": "Descubierto por los cabernicolas tras rozar 2 piedras.",
+    "agua": "Su formula en quimica es H2O.",
+    "viento": "Corriente de aire.",
 }
 
 dict_hints = {
@@ -34,11 +58,20 @@ dict_hints = {
     "fuego": "Calor",
     "agua": "Líquido",
     "viento": "Aire",
+}
 
-
+dict_hints_hard = {
+    "gato": "Animal",
+    "perro": "Animal",
+    "casa": "Propiedad",
+    "árbol": "Naturaleza",
 }
 
 dict_answers = {
+}
+
+points = {
+
 }
 
 votes = {
@@ -94,23 +127,27 @@ def choose_impostor():
     for impost in impostors:
         impostor = impost
         print(impost)
+    for p in player_list:
+        if p != impostor:
+            civil.append(p)
 
 
 def show_word():
-    global dict_words, player_list, impostor, final_word, dict_hints
-    word = random.choice(dict_words[""])
+    global dict_words, player_list, impostor, final_word, dict_hints, dict_hints_easy, dict_hints_hard
+    
+    word_normal = random.choice(dict_words[""])
     for player in player_list:
         print("\n" * 15)
         if player == impostor:
             for player_hint, hint in dict_hints.items():
-                if player_hint == word:
+                if player_hint == word_normal:
                     print(f"Pista para el impostor: {hint}")
                     break
             print(f"{player}, eres el impostor. No tienes palabra asignada.")
         else:
-            print(f"{player}, tu palabra es: {word}")
+            print(f"{player}, tu palabra es: {word_normal}")
         input("Pulsa enter para pasar a la siguiente persona...")
-    final_word = word
+    final_word = word_normal
         
 def rounds():
     global num_rounds, player_list, dict_answers
@@ -124,6 +161,9 @@ def rounds():
             print(f"\nTurno de {player}:")
             answer = input("Elija una palabra para describir la palabra secreta: ")
             dict_answers[player].append(answer)
+        voting()
+        
+        
 def voting():
     global player_list, votes
 
@@ -149,7 +189,6 @@ def voting():
                 else:
                     print("No puedes votarte a ti mismo.")
 
-
 def display_votes():
     global votes
     print("\nResultados de la votación:")
@@ -165,7 +204,7 @@ def reveal_word():
     print(f"\nLa palabra secreta era: {final_word}")
 
 def get_voted():
-    global votes
+    global votes, player_list
     max_votes = -1
     voted_player = ""
     for player, count in votes.items():
@@ -173,6 +212,7 @@ def get_voted():
             max_votes = count
             voted_player = player
     return voted_player      
+
 
 def check_tie():
     global votes
@@ -182,12 +222,20 @@ def check_tie():
     return False 
 
 def check_winner():
-    global impostor
+    global impostor, player_list, civil, points
+    for player in player_list:
+        if player not in points:
+            points[player] = 0
+
     voted_player = get_voted()
     if voted_player == impostor:
         print("Los jugadores han ganado! Han descubierto al impostor.")
+        for p in civil:
+            points[p] +=1
     else:
         print("El impostor ha ganado! No han descubierto al impostor.")
+        points[impostor] += 3
+    
 
 def reset_game():
     global player_list, votes, dict_answers, impostor, final_word, num_players, num_rounds, num_impostors
@@ -202,6 +250,12 @@ def reset_game():
 
 #Juego principal
 
+
+def menu():
+    print("Elija la modalidad que quiere jugar:")
+    print("1. Fácil" + '\n' + "2. Normal" + '\n' + "3. Dificil")
+    modalidad = int(input(""))
+
 def game():
 
     flag = True
@@ -212,7 +266,6 @@ def game():
         display_game_settings()
         show_word()
         rounds()
-        voting()
         display_votes()
         check_tie()
         if check_tie():
@@ -235,6 +288,7 @@ def game():
             check_winner()
             reveal_impostor()
             reveal_word()
+            print(points)
             respuesta = input("\n¿Desea jugar otra partida? (s/n): ").lower()
             if respuesta == 's':
                 reset_game()
