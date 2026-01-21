@@ -385,6 +385,3 @@ def jugar():
         except ValueError:
             print("Por favor, introduce un número válido.")
 
-
-if __name__ == "__main__":
-    jugar()
