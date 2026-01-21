@@ -2,22 +2,22 @@ import random
 
 #Constantes del juego
 TABLERO_SIZE = 5
-VACIO = "O"  # Agua
-TOCADO = "X"  # Barco tocado
-AGUA = "-"  # Disparo al agua
+VACIO = "  "  # Agua
+TOCADO = "💥"  # Barco tocado
+AGUA = "💧"  # Disparo al agua
 
 #Símbolos de barcos
 SIMBOLOS_BARCOS = {
-    "Crucero": "C",
-    "Submarino": "S",
-    "Destructor": "D",
-    "Lancha": "L"
+    "Crucero": "⛴️",
+    "Velero": "⛵",
+    "Destructor": "🛳️",
+    "Lancha": "🚤"
 }
 
 #Definición de la flota: [nombre, tamaño]
 FLOTA = [
     ["Crucero", 3],
-    ["Submarino", 2],
+    ["Velero", 2],
     ["Destructor", 2],
     ["Lancha", 1]
 ]
@@ -30,9 +30,11 @@ def inicializar_tablero():
 
 def mostrar_tablero(tablero, ocultar_barcos=True, barcos=None):
     #Muestra el tablero en la consola#
-    print("\n  " + " ".join(str(i) for i in range(TABLERO_SIZE)))
+    print("\n    " + "  ".join(str(i) for i in range(TABLERO_SIZE)))
+    separador = "  +" + "---+" * (TABLERO_SIZE - 1)
+    print(separador)
     for i in range(TABLERO_SIZE):
-        fila = f"{i} "
+        fila = f"{i} |"
         for j in range(TABLERO_SIZE):
             celda = tablero[i][j]
             
@@ -41,15 +43,16 @@ def mostrar_tablero(tablero, ocultar_barcos=True, barcos=None):
                 # Buscar si esta posición pertenece a algún barco
                 for nombre, info in barcos.items():
                     if (i, j) in info['coordenadas']:
-                        fila += info['simbolo'] + " "
+                        fila += " " + info['simbolo'] + " |"
                         break
                 else:
-                    fila += celda + " "
+                    fila += celda + "|"
             elif ocultar_barcos and celda in SIMBOLOS_BARCOS.values():
-                fila += VACIO + " "
+                fila += VACIO + "|"
             else:
-                fila += celda + " "
+                fila += celda + "|"
         print(fila)
+        print(separador)
     print()
 
 
