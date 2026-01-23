@@ -38,7 +38,7 @@ def mostrar_tablero(tablero, ocultar_barcos=True, barcos=None):
         for j in range(TABLERO_SIZE):
             celda = tablero[i][j]
             
-            # Si no ocultamos barcos y tenemos info de barcos, mostrar letra original
+            # Si no ocultamos barcos y tenemos info de barcos, mostrar emoji original
             if not ocultar_barcos and barcos and celda == TOCADO:
                 # Buscar si esta posición pertenece a algún barco
                 for nombre, info in barcos.items():
