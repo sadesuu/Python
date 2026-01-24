@@ -1,7 +1,7 @@
 import random
 
 #Constantes del juego
-TABLERO_SIZE = 8
+TABLERO_SIZE = 10
 VACIO = "  "  # Agua
 TOCADO = "💥"  # Barco tocado
 AGUA = "💧"  # Disparo al agua
@@ -102,6 +102,69 @@ def inicializar_juego():
     
     return tablero, barcos
 
+def colocar_barco_manual(tablero, nombre, tamano, emoji_barco):
+    """Permite al jugador colocar un barco manualmente"""
+    while True:
+        print(f"\nColocando {nombre} (tamaño: {tamano})")
+        mostrar_tablero(tablero, ocultar_barcos=False)
+        
+        try:
+            entrada = input("Coordenadas iniciales (fila,columna): ")
+            partes = entrada.split(',')
+            fila = int(partes[0])
+            col = int(partes[1])
+            
+            if fila < 0 or fila >= TABLERO_SIZE or col < 0 or col >= TABLERO_SIZE:
+                print("Coordenadas fuera del tablero!")
+                continue
+            
+            orientacion = input("Orientación (h=horizontal, v=vertical): ").lower()
+            
+            if orientacion not in ['h', 'v']:
+                print("Orientación inválida! Usa 'h' o 'v'")
+                continue
+            
+            horizontal = orientacion == 'h'
+            
+            if puede_colocar_barco(tablero, fila, col, tamano, horizontal):
+                coordenadas = []
+                if horizontal:
+                    for j in range(col, col + tamano):
+                        tablero[fila][j] = emoji_barco
+                        coordenadas.append((fila, j))
+                else:
+                    for i in range(fila, fila + tamano):
+                        tablero[i][col] = emoji_barco
+                        coordenadas.append((i, col))
+                return coordenadas
+            else:
+                print("No se puede colocar el barco ahí. Intenta otra posición.")
+                
+        except (ValueError, IndexError):
+            print("Formato incorrecto! Usa: fila,columna")
+
+
+def inicializar_juego_manual(nombre_jugador="Jugador"):
+    """Inicializa el tablero con colocación manual de barcos"""
+    tablero = inicializar_tablero()
+    barcos = {}
+    
+    print(f"\n{nombre_jugador}, coloca tus barcos:")
+    for nombre, tamano in FLOTA:
+        simbolo = SIMBOLOS_BARCOS[nombre]
+        coordenadas = colocar_barco_manual(tablero, nombre, tamano, simbolo)
+        barcos[nombre] = {
+            'tamano': tamano,
+            'coordenadas': coordenadas,
+            'impactos': 0,
+            'simbolo': simbolo
+        }
+    
+    print(f"\n¡{nombre_jugador} ha colocado todos sus barcos!")
+    return tablero, barcos
+
+
+
 
 def procesar_disparo(tablero, barcos, fila, col):
     #Procesa un disparo y devuelve el resultado
@@ -154,15 +217,17 @@ def disparo_maquina(tablero, disparos_realizados):
 
 
 def jugar_jugador_vs_jugador():
-    #Modo Jugador vs Jugador
+    """Modo Jugador vs Jugador"""
     print("\n=== JUGADOR vs JUGADOR ===\n")
     
     # Inicializar tableros para ambos jugadores
-    print("Configurando Jugador 1...")
-    tablero1, barcos1 = inicializar_juego()
+    tablero1, barcos1 = inicializar_juego_manual("Jugador 1")
+    input("\nPresiona Enter para que el Jugador 2 coloque sus barcos...")
+    print("\n" * 50)  # Limpiar pantalla
     
-    print("Configurando Jugador 2...")
-    tablero2, barcos2 = inicializar_juego()
+    tablero2, barcos2 = inicializar_juego_manual("Jugador 2")
+    input("\nPresiona Enter para comenzar la partida...")
+    print("\n" * 50)  # Limpiar pantalla
     
     turno = 1
     disparos1 = 0
@@ -221,7 +286,7 @@ def jugar_maquina_vs_jugador():
     
     # Tablero del jugador
     print("Configurando tu tablero...")
-    tablero_jugador, barcos_jugador = inicializar_juego()
+    tablero_jugador, barcos_jugador = inicializar_juego_manual("Jugador")
     
     # Tablero de la máquina
     print("Configurando tablero de la máquina...")
