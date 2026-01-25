@@ -47,9 +47,9 @@ def mostrar_tablero(tablero, ocultar_barcos=True):
     print()
 
 
-def puede_colocar_barco(tablero, fila, col, tamano, horizontal):
+def puede_colocar_barco(tablero, fila, col, tamano, direccion):
     #Verifica si se puede colocar un barco en la posición
-    if horizontal:
+    if direccion:
         if col + tamano > TABLERO_SIZE:
             return False
         for j in range(col, col + tamano):
@@ -67,13 +67,13 @@ def puede_colocar_barco(tablero, fila, col, tamano, horizontal):
 def colocar_barco(tablero, tamano, emoji_barco):
     #Coloca un barco aleatoriamente en el tablero
     while True:
-        horizontal = random.choice([True, False])
+        direccion = random.choice([True, False])
         fila = random.randint(0, TABLERO_SIZE - 1)
         col = random.randint(0, TABLERO_SIZE - 1)
         
-        if puede_colocar_barco(tablero, fila, col, tamano, horizontal):
+        if puede_colocar_barco(tablero, fila, col, tamano, direccion):
             coordenadas = []
-            if horizontal:
+            if direccion:
                 for j in range(col, col + tamano):
                     tablero[fila][j] = emoji_barco
                     coordenadas.append((fila, j))
