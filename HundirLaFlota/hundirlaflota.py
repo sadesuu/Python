@@ -364,7 +364,7 @@ def jugar():
     print("HUNDIR LA FLOTA")
     print("=" * 40)
     print(f"\nTablero de {TABLERO_SIZE}x{TABLERO_SIZE}")
-    print("Símbolos: O=Agua, X=Tocado, -=Fallo\n")
+    print("Símbolos: 💧=Agua, 💥=Tocado, -=Fallo\n")
     
     print("Selecciona el modo de juego:")
     print("1. Jugador vs Jugador")
