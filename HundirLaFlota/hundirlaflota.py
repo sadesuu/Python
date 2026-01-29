@@ -13,7 +13,7 @@ SIMBOLOS_BARCOS = {
     "Velero": "⛵",
     "Destructor": "🛳️",
     "Lancha": "🚤",
-    "Bomba": "💣"
+    # "Bomba": "💣"
 }
 
 #Definición de la flota: [nombre, tamaño]
@@ -22,7 +22,7 @@ FLOTA = [
     ["Velero", 2],
     ["Destructor", 2],
     ["Lancha", 1],
-    ["Bomba", 1]
+    # ["Bomba", 1]
 ]
 
 #Puntos para los jugadores
