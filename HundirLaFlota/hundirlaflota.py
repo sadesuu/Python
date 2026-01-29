@@ -5,7 +5,8 @@ TABLERO_SIZE = 8
 VACIO = "  "  # Agua
 TOCADO = "💥"  # Barco tocado
 AGUA = "💧"  # Disparo al agua
-
+# Comentado: límite de disparos por jugador (se usó para declarar empate)
+# MAX_DISPAROS = 50
 #Símbolos de barcos
 SIMBOLOS_BARCOS = {
     "Crucero": "⛴️",
@@ -186,6 +187,8 @@ def jugar_jugador_vs_jugador():
     disparos2 = 0
     # Comentado: control de puntos
     # puntos = {1: 0, 2: 0}
+    # Comentado: bandera de empate
+    # empate = False
     
     while not todos_hundidos(barcos1) and not todos_hundidos(barcos2):
         jugador_actual = 1 if turno % 2 == 1 else 2
@@ -223,7 +226,13 @@ def jugar_jugador_vs_jugador():
                 disparos1 += 1
             else:
                 disparos2 += 1
-            
+
+            # Comentado: lógica de empate por máximo de disparos
+            # if disparos1 >= MAX_DISPAROS or disparos2 >= MAX_DISPAROS:
+            #     print("Máximo de disparos alcanzado. Empate.")
+            #     empate = True
+            #     break
+
             turno += 1
             input("\nPresiona Enter para continuar...")
             
@@ -260,6 +269,8 @@ def jugar_maquina_vs_jugador():
     disparos_maquina_count = 0
     # Comentado: control de puntos
     # puntos = {"Jugador": 0, "Maquina": 0}
+    # Comentado: bandera de empate
+    # empate = False
     
     while not todos_hundidos(barcos_jugador) and not todos_hundidos(barcos_maquina):
         es_turno_jugador = turno % 2 == 1
@@ -285,6 +296,12 @@ def jugar_maquina_vs_jugador():
                 print(f">>> {resultado}")
                 disparos_jugador += 1
 
+                # Comentado: lógica de empate por máximo de disparos
+                # if disparos_jugador >= MAX_DISPAROS or disparos_maquina_count >= MAX_DISPAROS:
+                #     print("Máximo de disparos alcanzado. Empate.")
+                #     empate = True
+                #     break
+
                 # Comentado: actualización e impresión de puntos
                 # if nombre_barco:
                 #     if nombre_barco == "Bomba":
@@ -307,6 +324,12 @@ def jugar_maquina_vs_jugador():
             resultado, nombre_barco = procesar_disparo(tablero_jugador, barcos_jugador, fila, col)
             print(f">>> {resultado}")
             disparos_maquina_count += 1
+
+            # Comentado: lógica de empate por máximo de disparos
+            # if disparos_jugador >= MAX_DISPAROS or disparos_maquina_count >= MAX_DISPAROS:
+            #     print("Máximo de disparos alcanzado. Empate.")
+            #     empate = True
+            #     break
 
             # Comentado: actualización e impresión de puntos
             # if nombre_barco:
@@ -350,6 +373,8 @@ def jugar_maquina_vs_maquina():
     disparos2_count = 0
     # Comentado: control de puntos
     # puntos = {"Maquina1": 0, "Maquina2": 0}
+    # Comentado: bandera de empate
+    # empate = False
     
     while not todos_hundidos(barcos1) and not todos_hundidos(barcos2):
         es_turno_maquina1 = turno % 2 == 1
@@ -365,6 +390,12 @@ def jugar_maquina_vs_maquina():
             resultado, nombre_barco = procesar_disparo(tablero2, barcos2, fila, col)
             print(f">>> {resultado}")
             disparos1_count += 1
+
+            # Comentado: lógica de empate por máximo de disparos
+            # if disparos1_count >= MAX_DISPAROS or disparos2_count >= MAX_DISPAROS:
+            #     print("Máximo de disparos alcanzado. Empate.")
+            #     empate = True
+            #     break
 
             # Comentado: actualización e impresión de puntos
             # if nombre_barco:
@@ -387,6 +418,12 @@ def jugar_maquina_vs_maquina():
             resultado, nombre_barco = procesar_disparo(tablero1, barcos1, fila, col)
             print(f">>> {resultado}")
             disparos2_count += 1
+
+            # Comentado: lógica de empate por máximo de disparos
+            # if disparos1_count >= MAX_DISPAROS or disparos2_count >= MAX_DISPAROS:
+            #     print("Máximo de disparos alcanzado. Empate.")
+            #     empate = True
+            #     break
 
             # Comentado: actualización e impresión de puntos
             # if nombre_barco:
