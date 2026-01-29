@@ -11,7 +11,8 @@ SIMBOLOS_BARCOS = {
     "Crucero": "⛴️",
     "Velero": "⛵",
     "Destructor": "🛳️",
-    "Lancha": "🚤"
+    "Lancha": "🚤",
+    "Bomba": "💣"
 }
 
 #Definición de la flota: [nombre, tamaño]
@@ -19,8 +20,22 @@ FLOTA = [
     ["Crucero", 3],
     ["Velero", 2],
     ["Destructor", 2],
-    ["Lancha", 1]
+    ["Lancha", 1],
+    ["Bomba", 1]
 ]
+
+#Puntos para los jugadores
+PUNTOS_POR_BARCO = {
+    "Crucero": 5,
+    "Velero": 3,
+    "Destructor": 3,
+    "Lancha": 1,
+    "Bomba": 5
+}
+
+PUNTOS_POR_JUGADOR = {
+
+}
 
 
 def inicializar_tablero():
@@ -100,33 +115,35 @@ def inicializar_juego():
             'simbolo': simbolo
         }
     
+    
     return tablero, barcos
 
 
 def procesar_disparo(tablero, barcos, fila, col):
     #Procesa un disparo y devuelve el resultado
     celda = tablero[fila][col]
-    
+
+    # Devolver una tupla: (mensaje, nombre_barco_o_None)
     if celda == AGUA or celda == TOCADO:
-        return "Ya has disparado aquí"
-    
+        return "Ya has disparado aquí", None
+
     if celda == VACIO:
         tablero[fila][col] = AGUA
-        return "Agua!"
-    
+        return "Agua!", None
+
     if celda in SIMBOLOS_BARCOS.values():
         tablero[fila][col] = TOCADO
-        
+
         # Buscar el barco impactado
         for nombre, info in barcos.items():
             if (fila, col) in info['coordenadas']:
                 info['impactos'] += 1
                 if info['impactos'] == info['tamano']:
-                    return f"Hundido! ({nombre})"
+                    return f"Hundido! ({nombre})", nombre
                 else:
-                    return "Tocado!"
-    
-    return "Error"
+                    return "Tocado!", None
+
+    return "Error", None
 
 
 def todos_hundidos(barcos):
@@ -167,6 +184,8 @@ def jugar_jugador_vs_jugador():
     turno = 1
     disparos1 = 0
     disparos2 = 0
+    # Comentado: control de puntos
+    # puntos = {1: 0, 2: 0}
     
     while not todos_hundidos(barcos1) and not todos_hundidos(barcos2):
         jugador_actual = 1 if turno % 2 == 1 else 2
@@ -189,8 +208,16 @@ def jugar_jugador_vs_jugador():
                 print("Coordenadas fuera del tablero!")
                 continue
             
-            resultado = procesar_disparo(tablero_objetivo, barcos_objetivo, fila, col)
+            resultado, nombre_barco = procesar_disparo(tablero_objetivo, barcos_objetivo, fila, col)
             print(f">>> {resultado}")
+
+            # Comentado: actualización e impresión de puntos
+            # if nombre_barco:
+            #     if nombre_barco == "Bomba":
+            #         puntos[jugador_actual] -= PUNTOS_POR_BARCO.get("Bomba", 0)
+            #     else:
+            #         puntos[jugador_actual] += PUNTOS_POR_BARCO.get(nombre_barco, 0)
+            # print(f"Puntos - Jugador 1: {puntos[1]} | Jugador 2: {puntos[2]}")
             
             if jugador_actual == 1:
                 disparos1 += 1
@@ -231,6 +258,8 @@ def jugar_maquina_vs_jugador():
     turno = 1
     disparos_jugador = 0
     disparos_maquina_count = 0
+    # Comentado: control de puntos
+    # puntos = {"Jugador": 0, "Maquina": 0}
     
     while not todos_hundidos(barcos_jugador) and not todos_hundidos(barcos_maquina):
         es_turno_jugador = turno % 2 == 1
@@ -252,9 +281,17 @@ def jugar_maquina_vs_jugador():
                     print("Coordenadas fuera del tablero!")
                     continue
                 
-                resultado = procesar_disparo(tablero_maquina, barcos_maquina, fila, col)
+                resultado, nombre_barco = procesar_disparo(tablero_maquina, barcos_maquina, fila, col)
                 print(f">>> {resultado}")
                 disparos_jugador += 1
+
+                # Comentado: actualización e impresión de puntos
+                # if nombre_barco:
+                #     if nombre_barco == "Bomba":
+                #         puntos["Jugador"] -= PUNTOS_POR_BARCO.get("Bomba", 0)
+                #     else:
+                #         puntos["Jugador"] += PUNTOS_POR_BARCO.get(nombre_barco, 0)
+                # print(f"Puntos - Tú: {puntos['Jugador']} | Máquina: {puntos['Maquina']}")
                 
             except (ValueError, IndexError):
                 print("Formato incorrecto! Usa: fila,columna")
@@ -267,9 +304,17 @@ def jugar_maquina_vs_jugador():
             fila, col = disparo_maquina(tablero_jugador, disparos_maquina_realizados)
             print(f"La máquina dispara a: {fila},{col}")
             
-            resultado = procesar_disparo(tablero_jugador, barcos_jugador, fila, col)
+            resultado, nombre_barco = procesar_disparo(tablero_jugador, barcos_jugador, fila, col)
             print(f">>> {resultado}")
             disparos_maquina_count += 1
+
+            # Comentado: actualización e impresión de puntos
+            # if nombre_barco:
+            #     if nombre_barco == "Bomba":
+            #         puntos["Maquina"] -= PUNTOS_POR_BARCO.get("Bomba", 0)
+            #     else:
+            #         puntos["Maquina"] += PUNTOS_POR_BARCO.get(nombre_barco, 0)
+            # print(f"Puntos - Tú: {puntos['Jugador']} | Máquina: {puntos['Maquina']}")
             
             print("\nTu tablero:")
             mostrar_tablero(tablero_jugador, ocultar_barcos=False)
@@ -303,6 +348,8 @@ def jugar_maquina_vs_maquina():
     turno = 1
     disparos1_count = 0
     disparos2_count = 0
+    # Comentado: control de puntos
+    # puntos = {"Maquina1": 0, "Maquina2": 0}
     
     while not todos_hundidos(barcos1) and not todos_hundidos(barcos2):
         es_turno_maquina1 = turno % 2 == 1
@@ -315,9 +362,17 @@ def jugar_maquina_vs_maquina():
             fila, col = disparo_maquina(tablero2, disparos_maquina1)
             print(f"Máquina 1 dispara a: {fila},{col}")
             
-            resultado = procesar_disparo(tablero2, barcos2, fila, col)
+            resultado, nombre_barco = procesar_disparo(tablero2, barcos2, fila, col)
             print(f">>> {resultado}")
             disparos1_count += 1
+
+            # Comentado: actualización e impresión de puntos
+            # if nombre_barco:
+            #     if nombre_barco == "Bomba":
+            #         puntos["Maquina1"] -= PUNTOS_POR_BARCO.get("Bomba", 0)
+            #     else:
+            #         puntos["Maquina1"] += PUNTOS_POR_BARCO.get(nombre_barco, 0)
+            # print(f"Puntos - Máquina1: {puntos['Maquina1']} | Máquina2: {puntos['Maquina2']}")
             
             print("\nTablero Máquina 2:")
             mostrar_tablero(tablero2)
@@ -329,9 +384,17 @@ def jugar_maquina_vs_maquina():
             fila, col = disparo_maquina(tablero1, disparos_maquina2)
             print(f"Máquina 2 dispara a: {fila},{col}")
             
-            resultado = procesar_disparo(tablero1, barcos1, fila, col)
+            resultado, nombre_barco = procesar_disparo(tablero1, barcos1, fila, col)
             print(f">>> {resultado}")
             disparos2_count += 1
+
+            # Comentado: actualización e impresión de puntos
+            # if nombre_barco:
+            #     if nombre_barco == "Bomba":
+            #         puntos["Maquina2"] -= PUNTOS_POR_BARCO.get("Bomba", 0)
+            #     else:
+            #         puntos["Maquina2"] += PUNTOS_POR_BARCO.get(nombre_barco, 0)
+            # print(f"Puntos - Máquina1: {puntos['Maquina1']} | Máquina2: {puntos['Maquina2']}")
             
             print("\nTablero Máquina 1:")
             mostrar_tablero(tablero1)
